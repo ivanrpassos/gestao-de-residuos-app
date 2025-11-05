@@ -1,11 +1,9 @@
 package br.com.fiap.gestao_residuos.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "CONTENEDOR")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Contenedor {
 
     @Id

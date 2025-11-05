@@ -1,13 +1,10 @@
 package br.com.fiap.gestao_residuos.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "LEITURA")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Leitura {
 
     @Id

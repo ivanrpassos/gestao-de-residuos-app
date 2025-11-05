@@ -1,12 +1,10 @@
 package br.com.fiap.gestao_residuos.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "ROTA")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Rota {
 
     @Id
