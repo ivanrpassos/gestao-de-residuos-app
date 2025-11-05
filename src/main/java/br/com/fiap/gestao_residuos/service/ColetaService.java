@@ -23,8 +23,8 @@ public class ColetaService {
         return coletaRepository.findById(id);
     }
 
-    public Coleta salvar(Coleta contenedor) {
-        return coletaRepository.save(contenedor);
+    public Coleta salvar(Coleta coleta) {
+        return coletaRepository.save(coleta);
     }
 
     public Coleta atualizar(Long id, Coleta coletaParam) {
