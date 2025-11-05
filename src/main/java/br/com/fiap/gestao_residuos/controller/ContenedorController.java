@@ -3,14 +3,14 @@ package br.com.fiap.gestao_residuos.controller;
 import br.com.fiap.gestao_residuos.model.Contenedor;
 import br.com.fiap.gestao_residuos.service.ContenedorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 public class ContenedorController {
 
     @Autowired
@@ -18,7 +18,8 @@ public class ContenedorController {
 
     @GetMapping("/contenedores")
     public ResponseEntity<List<Contenedor>> listarTodos() {
-        return ResponseEntity.ok(contenedorService.listarTodos());
+        List<Contenedor> contenedores = contenedorService.listarTodos();
+        return ResponseEntity.ok(contenedores);
     }
 
     @GetMapping("/contenedor/{id}")
@@ -31,7 +32,7 @@ public class ContenedorController {
     @PostMapping("/contenedor")
     public ResponseEntity<Contenedor> salvar(@RequestBody Contenedor contenedor) {
         Contenedor novo = contenedorService.salvar(contenedor);
-        return ResponseEntity.ok(novo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
     @PutMapping("/contenedor/{id}")

@@ -3,22 +3,23 @@ package br.com.fiap.gestao_residuos.controller;
 import br.com.fiap.gestao_residuos.model.Rota;
 import br.com.fiap.gestao_residuos.service.RotaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 public class RotaController {
 
     @Autowired
     private RotaService rotaService;
 
-
     @GetMapping("/rotas")
     public ResponseEntity<List<Rota>> listarTodos() {
-        return ResponseEntity.ok(rotaService.listarTodos());
+        List<Rota> rotas = rotaService.listarTodos();
+        return ResponseEntity.ok(rotas);
     }
 
     @GetMapping("/rota/{id}")
@@ -31,7 +32,7 @@ public class RotaController {
     @PostMapping("/rota")
     public ResponseEntity<Rota> salvar(@RequestBody Rota rota) {
         Rota novo = rotaService.salvar(rota);
-        return ResponseEntity.ok(novo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
     @PutMapping("/rota/{id}")
@@ -43,6 +44,6 @@ public class RotaController {
     @DeleteMapping("/rota/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         rotaService.excluir(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

@@ -3,13 +3,14 @@ package br.com.fiap.gestao_residuos.controller;
 import br.com.fiap.gestao_residuos.model.Destinacao;
 import br.com.fiap.gestao_residuos.service.DestinacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 public class DestinacaoController {
 
     @Autowired
@@ -17,7 +18,8 @@ public class DestinacaoController {
 
     @GetMapping("/destinacoes")
     public ResponseEntity<List<Destinacao>> listarTodos() {
-        return ResponseEntity.ok(destinacaoService.listarTodos());
+        List<Destinacao> destinacoes = destinacaoService.listarTodos();
+        return ResponseEntity.ok(destinacoes);
     }
 
     @GetMapping("/destino/{id}")
@@ -30,7 +32,7 @@ public class DestinacaoController {
     @PostMapping("/destino")
     public ResponseEntity<Destinacao> salvar(@RequestBody Destinacao destino) {
         Destinacao novo = destinacaoService.salvar(destino);
-        return ResponseEntity.ok(novo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
     @PutMapping("/destino/{id}")
@@ -42,6 +44,6 @@ public class DestinacaoController {
     @DeleteMapping("/destino/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         destinacaoService.excluir(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

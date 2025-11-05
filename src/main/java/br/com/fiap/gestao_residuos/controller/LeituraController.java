@@ -3,13 +3,14 @@ package br.com.fiap.gestao_residuos.controller;
 import br.com.fiap.gestao_residuos.model.Leitura;
 import br.com.fiap.gestao_residuos.service.LeituraService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 public class LeituraController {
 
     @Autowired
@@ -17,7 +18,8 @@ public class LeituraController {
 
     @GetMapping("/leituras")
     public ResponseEntity<List<Leitura>> listarTodos() {
-        return ResponseEntity.ok(leituraService.listarTodos());
+        List<Leitura> leituras = leituraService.listarTodos();
+        return ResponseEntity.ok(leituras);
     }
 
     @GetMapping("/leitura/{id}")
@@ -30,7 +32,7 @@ public class LeituraController {
     @PostMapping("/leitura")
     public ResponseEntity<Leitura> salvar(@RequestBody Leitura leitura) {
         Leitura novo = leituraService.salvar(leitura);
-        return ResponseEntity.ok(novo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
     @PutMapping("/leitura/{id}")
@@ -42,6 +44,6 @@ public class LeituraController {
     @DeleteMapping("/leitura/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         leituraService.excluir(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
