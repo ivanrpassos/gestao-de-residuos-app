@@ -22,19 +22,19 @@ public class DestinacaoService {
         return destinacaoRepository.findById(id);
     }
 
-    public Destinacao salvar(Destinacao contenedor) {
-        return destinacaoRepository.save(contenedor);
+    public Destinacao salvar(Destinacao destinacao) {
+        return destinacaoRepository.save(destinacao);
     }
 
-    public Destinacao atualizar(Long id, Destinacao contenedorAtualizado) {
+    public Destinacao atualizar(Long id, Destinacao destinacaoAtualizado) {
         return destinacaoRepository.findById(id)
-                .map(contenedor -> {
-                    contenedor.setQuantidadeKg(contenedorAtualizado.getQuantidadeKg());
-                    contenedor.setTipoMaterial(contenedorAtualizado.getTipoMaterial());
-                    contenedor.setDataRegistro(contenedorAtualizado.getDataRegistro());
-                    contenedor.setLocalDestino(contenedorAtualizado.getLocalDestino());
+                .map(destinacao -> {
+                    destinacao.setQuantidadeKg(destinacaoAtualizado.getQuantidadeKg());
+                    destinacao.setTipoMaterial(destinacaoAtualizado.getTipoMaterial());
+                    destinacao.setDataRegistro(destinacaoAtualizado.getDataRegistro());
+                    destinacao.setLocalDestino(destinacaoAtualizado.getLocalDestino());
 
-                    return destinacaoRepository.save(contenedor);
+                    return destinacaoRepository.save(destinacao);
                 })
                 .orElseThrow(() -> new RuntimeException("Contêiner não encontrado com ID: " + id));
     }
