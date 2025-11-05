@@ -1,10 +1,12 @@
 package br.com.fiap.gestao_residuos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "COLETA")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Coleta {
 
     @Id
@@ -26,7 +28,26 @@ public class Coleta {
     @Column(name = "STATUS", length = 100)
     private String status;
 
-    // getters e setters
+    public Coleta() { }
+
+    public Coleta(Long id, Contenedor contenedor, Rota rota, Date dataAgendada, String status) {
+        this.id = id;
+        this.contenedor = contenedor;
+        this.rota = rota;
+        this.dataAgendada = dataAgendada;
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Coleta{" +
+                "id=" + id +
+                ", contenedor=" + contenedor +
+                ", rota=" + rota +
+                ", dataAgendada=" + dataAgendada +
+                ", status='" + status + '\'' +
+                '}';
+    }
 
     public Long getId() {
         return id;
@@ -65,17 +86,6 @@ public class Coleta {
     }
 
     public void setStatus(String status) {
-        this.status = status;
-    }
-    public Coleta() {
-    }
-    // construtores
-
-    public Coleta(Long id, Contenedor contenedor, Rota rota, Date dataAgendada, String status) {
-        this.id = id;
-        this.contenedor = contenedor;
-        this.rota = rota;
-        this.dataAgendada = dataAgendada;
         this.status = status;
     }
 }

@@ -1,10 +1,12 @@
 package br.com.fiap.gestao_residuos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "ROTA")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Rota {
 
     @Id
@@ -24,7 +26,26 @@ public class Rota {
     @OneToMany(mappedBy = "rota", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Coleta> coletas;
 
-    // getters e setters
+    public Rota() { }
+
+    public Rota(Long id, String veiculo, String enderecoBase, Double capacidade, List<Coleta> coletas) {
+        this.id = id;
+        this.veiculo = veiculo;
+        this.enderecoBase = enderecoBase;
+        this.capacidade = capacidade;
+        this.coletas = coletas;
+    }
+
+    @Override
+    public String toString() {
+        return "Rota{" +
+                "id=" + id +
+                ", veiculo='" + veiculo + '\'' +
+                ", enderecoBase='" + enderecoBase + '\'' +
+                ", capacidade=" + capacidade +
+                ", coletas=" + coletas +
+                '}';
+    }
 
     public Long getId() {
         return id;
@@ -63,20 +84,6 @@ public class Rota {
     }
 
     public void setColetas(List<Coleta> coletas) {
-        this.coletas = coletas;
-    }
-
-
-    public Rota() {
-    }
-
-    // construtores
-
-    public Rota(Long id, String veiculo, String enderecoBase, Double capacidade, List<Coleta> coletas) {
-        this.id = id;
-        this.veiculo = veiculo;
-        this.enderecoBase = enderecoBase;
-        this.capacidade = capacidade;
         this.coletas = coletas;
     }
 }

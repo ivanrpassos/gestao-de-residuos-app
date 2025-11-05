@@ -1,10 +1,12 @@
 package br.com.fiap.gestao_residuos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "DESTINACAO")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Destinacao {
 
     @Id
@@ -24,7 +26,26 @@ public class Destinacao {
     @Column(name = "QUANTIDADE_KG")
     private Double quantidadeKg;
 
-    // getters e setters
+    public Destinacao() { }
+
+    public Destinacao(Long id, String tipoMaterial, String localDestino, Date dataRegistro, Double quantidadeKg) {
+        this.id = id;
+        this.tipoMaterial = tipoMaterial;
+        this.localDestino = localDestino;
+        this.dataRegistro = dataRegistro;
+        this.quantidadeKg = quantidadeKg;
+    }
+
+    @Override
+    public String toString() {
+        return "Destinacao{" +
+                "id=" + id +
+                ", tipoMaterial='" + tipoMaterial + '\'' +
+                ", localDestino='" + localDestino + '\'' +
+                ", dataRegistro=" + dataRegistro +
+                ", quantidadeKg=" + quantidadeKg +
+                '}';
+    }
 
     public Long getId() {
         return id;
@@ -63,19 +84,6 @@ public class Destinacao {
     }
 
     public void setQuantidadeKg(Double quantidadeKg) {
-        this.quantidadeKg = quantidadeKg;
-    }
-
-    // construtores
-
-    public Destinacao() {
-    }
-
-    public Destinacao(Long id, String tipoMaterial, String localDestino, Date dataRegistro, Double quantidadeKg) {
-        this.id = id;
-        this.tipoMaterial = tipoMaterial;
-        this.localDestino = localDestino;
-        this.dataRegistro = dataRegistro;
         this.quantidadeKg = quantidadeKg;
     }
 }

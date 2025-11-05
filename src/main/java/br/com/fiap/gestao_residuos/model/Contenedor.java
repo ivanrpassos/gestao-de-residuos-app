@@ -1,9 +1,11 @@
 package br.com.fiap.gestao_residuos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "CONTENEDOR")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Contenedor {
 
     @Id
@@ -20,30 +22,14 @@ public class Contenedor {
     @Column(name = "TIPO_MATERIAL")
     private String tipoMaterial;
 
-    // ✅ Construtor padrão (obrigatório)
-    public Contenedor() {
-    }
+    public Contenedor() { }
 
-    // ✅ Construtor completo
     public Contenedor(Long id, String localizacao, Double capacidadeLitros, String tipoMaterial) {
         this.id = id;
         this.localizacao = localizacao;
         this.capacidadeLitros = capacidadeLitros;
         this.tipoMaterial = tipoMaterial;
     }
-
-    // ✅ Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getLocalizacao() { return localizacao; }
-    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
-
-    public Double getCapacidadeLitros() { return capacidadeLitros; }
-    public void setCapacidadeLitros(Double capacidadeLitros) { this.capacidadeLitros = capacidadeLitros; }
-
-    public String getTipoMaterial() { return tipoMaterial; }
-    public void setTipoMaterial(String tipoMaterial) { this.tipoMaterial = tipoMaterial; }
 
     @Override
     public String toString() {
@@ -53,5 +39,37 @@ public class Contenedor {
                 ", capacidadeLitros=" + capacidadeLitros +
                 ", tipoMaterial='" + tipoMaterial + '\'' +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(String localizacao) {
+        this.localizacao = localizacao;
+    }
+
+    public Double getCapacidadeLitros() {
+        return capacidadeLitros;
+    }
+
+    public void setCapacidadeLitros(Double capacidadeLitros) {
+        this.capacidadeLitros = capacidadeLitros;
+    }
+
+    public String getTipoMaterial() {
+        return tipoMaterial;
+    }
+
+    public void setTipoMaterial(String tipoMaterial) {
+        this.tipoMaterial = tipoMaterial;
     }
 }

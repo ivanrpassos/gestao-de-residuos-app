@@ -1,11 +1,13 @@
 package br.com.fiap.gestao_residuos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "LEITURA")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Leitura {
 
     @Id
@@ -26,7 +28,26 @@ public class Leitura {
     @Column(name = "PESO_KG")
     private Double pesoKg;
 
-    // getters e setters
+    public Leitura() { }
+
+    public Leitura(Long id, Contenedor contenedor, Date dataHora, Double nivelPercent, Double pesoKg) {
+        this.id = id;
+        this.contenedor = contenedor;
+        this.dataHora = dataHora;
+        this.nivelPercent = nivelPercent;
+        this.pesoKg = pesoKg;
+    }
+
+    @Override
+    public String toString() {
+        return "Leitura{" +
+                "id=" + id +
+                ", contenedor=" + contenedor +
+                ", dataHora=" + dataHora +
+                ", nivelPercent=" + nivelPercent +
+                ", pesoKg=" + pesoKg +
+                '}';
+    }
 
     public Long getId() {
         return id;
@@ -65,19 +86,6 @@ public class Leitura {
     }
 
     public void setPesoKg(Double pesoKg) {
-        this.pesoKg = pesoKg;
-    }
-
-
-    public Leitura() {
-    }
-
-    // construtores
-    public Leitura(Long id, Contenedor contenedor, Date dataHora, Double nivelPercent, Double pesoKg) {
-        this.id = id;
-        this.contenedor = contenedor;
-        this.dataHora = dataHora;
-        this.nivelPercent = nivelPercent;
         this.pesoKg = pesoKg;
     }
 }
