@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ColetaController {
-
+    int skibidi = 2;
     @Autowired
     private ColetaService coletaService;
 
