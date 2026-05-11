@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Coleta",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Identificador único da coleta"
+    },
+    "dataAgendada": {
+      "type": ["integer", "string", "null"],
+      "description": "Data agendada para a coleta"
+    },
+    "status": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Status atual da coleta (ex: AGENDADO, CONCLUIDO, CANCELADO)"
+    },
+    "contenedor": {
+      "type": ["object", "null"],
+      "description": "Contenedor associado à coleta"
+    },
+    "rota": {
+      "type": ["object", "null"],
+      "description": "Rota associada à coleta"
+    }
+  },
+  "required": ["id", "status"],
+  "additionalProperties": true
+}

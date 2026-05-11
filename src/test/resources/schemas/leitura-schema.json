@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Leitura",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Identificador único da leitura"
+    },
+    "dataHora": {
+      "type": ["integer", "string", "null"],
+      "description": "Data e hora da leitura do sensor"
+    },
+    "nivelPercent": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Nível de preenchimento do contenedor em percentual"
+    },
+    "pesoKg": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Peso dos resíduos em kg"
+    },
+    "contenedor": {
+      "type": ["object", "null"],
+      "description": "Contenedor monitorado"
+    }
+  },
+  "required": ["id"],
+  "additionalProperties": true
+}

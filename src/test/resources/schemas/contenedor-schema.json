@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Contenedor",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Identificador único do contenedor"
+    },
+    "localizacao": {
+      "type": "string",
+      "description": "Endereço de localização do contenedor"
+    },
+    "capacidadeLitros": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Capacidade do contenedor em litros"
+    },
+    "tipoMaterial": {
+      "type": "string",
+      "description": "Tipo de material aceito pelo contenedor"
+    }
+  },
+  "required": ["id", "localizacao", "capacidadeLitros", "tipoMaterial"],
+  "additionalProperties": false
+}

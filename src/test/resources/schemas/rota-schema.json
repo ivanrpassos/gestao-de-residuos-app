@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Rota",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Identificador único da rota"
+    },
+    "veiculo": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Identificação do veículo responsável pela rota"
+    },
+    "enderecoBase": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Endereço base de saída da rota"
+    },
+    "capacidade": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Capacidade de carga do veículo em kg"
+    },
+    "coletas": {
+      "type": ["array", "null"],
+      "description": "Lista de coletas associadas à rota"
+    }
+  },
+  "required": ["id", "veiculo", "enderecoBase"],
+  "additionalProperties": true
+}
