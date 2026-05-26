@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UrbanSense ESG — Proposta de Projeto IoT para Gestão de Resíduos Urbanos</title>
+  <meta name="description" content="Proposta técnica do projeto UrbanSense ESG: sistema inteligente de gestão de resíduos urbanos com IoT, voltado a eficiência ambiental, inclusão social e governança corporativa." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary:   #070b14;
+      --bg-secondary: #0d1424;
+      --bg-card:      #111827;
+      --bg-card-alt:  #141e30;
+      --border:       rgba(255,255,255,0.07);
+      --accent-green: #22c55e;
+      --accent-teal:  #14b8a6;
+      --accent-blue:  #3b82f6;
+      --accent-violet:#8b5cf6;
+      --accent-amber: #f59e0b;
+      --accent-rose:  #f43f5e;
+      --text-primary: #f1f5f9;
+      --text-secondary:#94a3b8;
+      --text-muted:   #64748b;
+      --gradient-hero: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --gradient-green: linear-gradient(135deg, #064e3b, #065f46, #059669);
+      --gradient-teal:  linear-gradient(135deg, #134e4a, #0f766e, #14b8a6);
+      --gradient-blue:  linear-gradient(135deg, #1e3a5f, #1e40af, #3b82f6);
+      --gradient-violet:linear-gradient(135deg, #2e1065, #4c1d95, #7c3aed);
+      --gradient-amber: linear-gradient(135deg, #78350f, #92400e, #b45309);
+      --gradient-rose:  linear-gradient(135deg, #881337, #9f1239, #e11d48);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATED BACKGROUND ──────────────────────────── */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-orbs span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      animation: float 18s ease-in-out infinite;
+    }
+    .bg-orbs span:nth-child(1) { width: 600px; height: 600px; background: #22c55e; top: -200px; left: -200px; animation-delay: 0s; }
+    .bg-orbs span:nth-child(2) { width: 500px; height: 500px; background: #3b82f6; top: 40%; right: -150px; animation-delay: -6s; }
+    .bg-orbs span:nth-child(3) { width: 400px; height: 400px; background: #8b5cf6; bottom: -150px; left: 30%; animation-delay: -12s; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(40px, -30px) scale(1.05); }
+      66%       { transform: translate(-20px, 20px) scale(0.97); }
+    }
+
+    /* ── LAYOUT WRAPPER ──────────────────────────────── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(7, 11, 20, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      transition: all 0.3s;
+    }
+    nav .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, #22c55e, #14b8a6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.78rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .nav-links a:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #22c55e;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeInDown 0.8s ease;
+    }
+    .hero-badge .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.9s ease 0.1s both;
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, #22c55e 0%, #14b8a6 50%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 48px;
+      animation: fadeInUp 0.9s ease 0.25s both;
+      font-weight: 400;
+    }
+    .hero-pillars {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.9s ease 0.4s both;
+    }
+    .pillar-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .pillar-chip.env  { background: rgba(34,197,94,0.1);  border-color: rgba(34,197,94,0.3);  color: #4ade80; }
+    .pillar-chip.soc  { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
+    .pillar-chip.gov  { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.3); color: #a78bfa; }
+    .pillar-chip.iot  { background: rgba(20,184,166,0.1); border-color: rgba(20,184,166,0.3); color: #2dd4bf; }
+
+    /* ── SECTION BASE ────────────────────────────────── */
+    section { padding: 100px 0; position: relative; }
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .section-eyebrow .num {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+    .section-eyebrow .label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 680px;
+      line-height: 1.7;
+    }
+    .divider {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* ── CARDS ───────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .card p, .card li {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .card ul { padding-left: 20px; }
+    .card ul li { margin-bottom: 6px; }
+
+    /* ── SECTION 1 — VISÃO GERAL ─────────────────────── */
+    #visao-geral .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    #visao-geral .card:hover { border-color: rgba(34,197,94,0.4); }
+    .stat-bar {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .stat-item {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .stat-item:hover { border-color: rgba(34,197,94,0.4); transform: translateY(-3px); }
+    .stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #22c55e, #14b8a6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { color: var(--text-secondary); font-size: 0.82rem; margin-top: 4px; }
+
+    /* ── SECTION 2 — OBJETIVOS ───────────────────────── */
+    #objetivos { background: var(--bg-secondary); }
+    .objectives-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .obj-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .obj-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .obj-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .obj-card.green::before  { background: linear-gradient(90deg, #22c55e, #14b8a6); }
+    .obj-card.blue::before   { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
+    .obj-card.teal::before   { background: linear-gradient(90deg, #14b8a6, #22c55e); }
+    .obj-card.violet::before { background: linear-gradient(90deg, #8b5cf6, #f43f5e); }
+    .obj-card.amber::before  { background: linear-gradient(90deg, #f59e0b, #f43f5e); }
+    .obj-card.rose::before   { background: linear-gradient(90deg, #f43f5e, #8b5cf6); }
+    .obj-card .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+    .obj-card.green  .tag { background: rgba(34,197,94,0.15);  color: #4ade80; }
+    .obj-card.blue   .tag { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .obj-card.teal   .tag { background: rgba(20,184,166,0.15); color: #2dd4bf; }
+    .obj-card.violet .tag { background: rgba(139,92,246,0.15); color: #a78bfa; }
+    .obj-card.amber  .tag { background: rgba(245,158,11,0.15); color: #fcd34d; }
+    .obj-card.rose   .tag { background: rgba(244,63,94,0.15);  color: #fb7185; }
+    .obj-card h3 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+    .obj-card p  { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; }
+    .smart-tag {
+      display: inline-flex;
+      gap: 6px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .smart-tag span {
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── SECTION 3 — TECNOLOGIAS ─────────────────────── */
+    #tecnologias .tech-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      position: relative;
+    }
+    .arch-layer {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.3s;
+    }
+    .arch-layer:hover {
+      border-color: rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.04);
+      transform: translateX(4px);
+    }
+    .arch-layer:last-child { margin-bottom: 0; }
+    .arch-layer-icon { font-size: 1.4rem; }
+    .arch-layer-info { flex: 1; }
+    .arch-layer-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
+    .arch-layer-desc  { color: var(--text-muted); font-size: 0.78rem; }
+    .arch-arrow {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin: -4px 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .arch-arrow::before, .arch-arrow::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .tech-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .tech-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s;
+    }
+    .tech-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .tech-card .tc-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .tc-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .tc-icon.green  { background: rgba(34,197,94,0.15); }
+    .tc-icon.teal   { background: rgba(20,184,166,0.15); }
+    .tc-icon.blue   { background: rgba(59,130,246,0.15); }
+    .tc-icon.violet { background: rgba(139,92,246,0.15); }
+    .tc-icon.amber  { background: rgba(245,158,11,0.15); }
+    .tc-icon.rose   { background: rgba(244,63,94,0.15); }
+    .tech-card h3 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; }
+    .tech-card .tc-sub { color: var(--text-muted); font-size: 0.75rem; }
+    .tech-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 14px 0;
+    }
+    .tech-tag {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .tech-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ── SECTION 4 — IMPLEMENTAÇÃO ───────────────────── */
+    #implementacao { background: var(--bg-secondary); }
+    .timeline {
+      position: relative;
+      margin-top: 56px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #22c55e, #14b8a6, #3b82f6, #8b5cf6);
+    }
+    .timeline-item {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 40px;
+      padding-left: 60px;
+      position: relative;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: 14px;
+      top: 8px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 800;
+      border: 2px solid var(--bg-secondary);
+      z-index: 2;
+    }
+    .timeline-item:nth-child(1) .timeline-dot { background: #22c55e; color: #052e16; }
+    .timeline-item:nth-child(2) .timeline-dot { background: #14b8a6; color: #042f2e; }
+    .timeline-item:nth-child(3) .timeline-dot { background: #3b82f6; color: #1e3a5f; }
+    .timeline-item:nth-child(4) .timeline-dot { background: #8b5cf6; color: #2e1065; }
+    .timeline-item:nth-child(5) .timeline-dot { background: #f59e0b; color: #78350f; }
+    .timeline-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      flex: 1;
+      transition: all 0.3s;
+    }
+    .timeline-content:hover {
+      transform: translateX(4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .timeline-phase {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .timeline-content h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    .timeline-content p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65; }
+    .timeline-duration {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 14px;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* ── SECTION 5 — BENEFÍCIOS ──────────────────────── */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .benefit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .benefit-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border-radius: inherit;
+    }
+    .benefit-card.bc-green::after  { background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.08), transparent 70%); }
+    .benefit-card.bc-teal::after   { background: radial-gradient(ellipse at 50% 0%, rgba(20,184,166,0.08), transparent 70%); }
+    .benefit-card.bc-blue::after   { background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.08), transparent 70%); }
+    .benefit-card.bc-violet::after { background: radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.08), transparent 70%); }
+    .benefit-card.bc-amber::after  { background: radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.08), transparent 70%); }
+    .benefit-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.5); }
+    .benefit-card:hover::after { opacity: 1; }
+    .benefit-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .benefit-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .benefit-card.bc-green  .benefit-number { color: #4ade80; }
+    .benefit-card.bc-teal   .benefit-number { color: #2dd4bf; }
+    .benefit-card.bc-blue   .benefit-number { color: #60a5fa; }
+    .benefit-card.bc-violet .benefit-number { color: #a78bfa; }
+    .benefit-card.bc-amber  .benefit-number { color: #fcd34d; }
+    .benefit-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      position: relative; z-index: 1;
+    }
+    .benefit-card p { color: var(--text-secondary); font-size: 0.83rem; line-height: 1.5; position: relative; z-index: 1; }
+
+    .benefits-esg-banner {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .esg-pillar {
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .esg-pillar.e { background: var(--gradient-green); }
+    .esg-pillar.s { background: var(--gradient-blue); }
+    .esg-pillar.g { background: var(--gradient-violet); }
+    .esg-pillar .pillar-letter {
+      font-family: 'Outfit', sans-serif;
+      font-size: 4rem;
+      font-weight: 900;
+      opacity: 0.15;
+      position: absolute;
+      top: 10px; right: 20px;
+      line-height: 1;
+    }
+    .esg-pillar h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      margin-bottom: 16px;
+    }
+    .esg-pillar ul { list-style: none; padding: 0; }
+    .esg-pillar ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+    .esg-pillar ul li::before { content: '→'; font-weight: 700; flex-shrink: 0; }
+
+    /* ── SECTION 6 — SEGURANÇA ───────────────────────── */
+    #seguranca { background: var(--bg-secondary); }
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .sec-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s;
+    }
+    .sec-card:hover {
+      border-color: rgba(139,92,246,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .sec-card .sc-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: rgba(139,92,246,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+    }
+    .sec-card h3 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 10px; }
+    .sec-card p  { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.65; }
+    .compliance-strip {
+      margin-top: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .compliance-strip .cs-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .cs-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .cs-badge {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(139,92,246,0.12);
+      border: 1px solid rgba(139,92,246,0.3);
+      color: #a78bfa;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #22c55e, #14b8a6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* ── ANIMATIONS ──────────────────────────────────── */
+    @keyframes fadeInUp   { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      #tecnologias .tech-intro { grid-template-columns: 1fr; }
+      .benefits-esg-banner { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .timeline::before { left: 16px; }
+      .timeline-item { padding-left: 46px; }
+      .timeline-dot { left: 6px; width: 20px; height: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="main-nav" aria-label="Navegação principal">
+    <div class="nav-inner">
+      <span class="nav-logo">🌿 UrbanSense ESG</span>
+      <div class="nav-links" role="navigation">
+        <a href="#visao-geral">Visão Geral</a>
+        <a href="#objetivos">Objetivos</a>
+        <a href="#tecnologias">Tecnologias</a>
+        <a href="#implementacao">Implementação</a>
+        <a href="#beneficios">Benefícios</a>
+        <a href="#seguranca">Segurança</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span> Projeto ESG · IoT · Sustentabilidade Urbana
+      </div>
+      <h1 id="hero-heading">
+        <span class="gradient-text">UrbanSense ESG</span><br />
+        Gestão Inteligente de<br />Resíduos Urbanos
+      </h1>
+      <p class="hero-sub">
+        Um ecossistema IoT de ponta a ponta que transforma a coleta e o processamento de resíduos urbanos
+        em dados acionáveis — reduzindo custos operacionais, emissões de carbono e ampliando a inclusão
+        comunitária por meio da tecnologia.
+      </p>
+      <div class="hero-pillars">
+        <span class="pillar-chip env">🌱 Ambiental</span>
+        <span class="pillar-chip soc">🤝 Social</span>
+        <span class="pillar-chip gov">⚖️ Governança</span>
+        <span class="pillar-chip iot">📡 IoT</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ════════════════════════════════════════════════════
+       SEÇÃO 1 — VISÃO GERAL
+  ════════════════════════════════════════════════════ -->
+  <section id="visao-geral" aria-labelledby="sec1-title">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <div class="num" style="background:rgba(34,197,94,0.15);color:#4ade80;">01</div>
+        <span class="label" style="color:#4ade80;">Visão Geral do Projeto</span>
+      </div>
+      <h2 class="section-title reveal" id="sec1-title">
+        Uma plataforma que dá inteligência<br />ao ciclo de resíduos urbanos
+      </h2>
+      <p class="section-desc reveal">
+        O <strong>UrbanSense ESG</strong> é um sistema integrado de monitoramento e otimização da coleta de
+        resíduos sólidos urbanos. Sensores distribuídos por contêineres e pontos de coleta seletiva alimentam
+        uma plataforma de análise em tempo real, permitindo roteirização dinâmica de veículos coletores,
+        rastreamento de metas ESG e engajamento da população — tudo dentro de uma arquitetura segura,
+        escalável e em conformidade com a LGPD e a Política Nacional de Resíduos Sólidos (PNRS).
+      </p>
+
+      <div class="overview-grid">
+        <div class="card reveal" style="border-color:rgba(34,197,94,0.2);">
+          <div class="card-icon" style="background:rgba(34,197,94,0.15);">🗺️</div>
+          <h3>Contexto e Problema</h3>
+          <p>Municípios brasileiros desperdiçam até 40% da capacidade de coleta por rotas fixas não otimizadas.
+          Contêineres transbordam antes da passagem do caminhão ou ficam subutilizados, gerando custos
+          desnecessários e impacto ambiental evitável.</p>
+        </div>
+        <div class="card reveal" style="border-color:rgba(20,184,166,0.2);">
+          <div class="card-icon" style="background:rgba(20,184,166,0.15);">💡</div>
+          <h3>A Solução Proposta</h3>
+          <p>Sensores ultrassônicos e de peso instalados nos contêineres reportam o nível de enchimento em
+          tempo real. Um algoritmo de roteirização dinâmica recalcula as rotas dos coletores, reduzindo
+          quilômetros percorridos e combustível consumido.</p>
+        </div>
+        <div class="card reveal" style="border-color:rgba(59,130,246,0.2);">
+          <div class="card-icon" style="background:rgba(59,130,246,0.15);">📊</div>
+          <h3>Plataforma ESG Integrada</h3>
+          <p>Dashboard unificado com indicadores ambientais (CO₂ evitado, taxa de reciclagem), sociais
+          (postos gerados, comunidades atendidas) e de governança (compliance PNRS, auditoria de dados)
+          — pronto para relatórios GRI e ODS.</p>
+        </div>
+        <div class="card reveal" style="border-color:rgba(139,92,246,0.2);">
+          <div class="card-icon" style="background:rgba(139,92,246,0.15);">🌐</div>
+          <h3>Inclusão e Participação Social</h3>
+          <p>Aplicativo móvel cidadão para registrar pontos de descarte irregular, solicitar coleta especial e
+          acompanhar o impacto ambiental do bairro. Gamificação incentiva comportamento responsável com
+          bonificações em programas de reciclagem.</p>
+        </div>
+      </div>
+
+      <div class="stat-bar">
+        <div class="stat-item reveal">
+          <div class="stat-value">35%</div>
+          <div class="stat-label">Redução de rotas ineficientes</div>
+        </div>
+        <div class="stat-item reveal">
+          <div class="stat-value">28%</div>
+          <div class="stat-label">Queda nas emissões de CO₂</div>
+        </div>
+        <div class="stat-item reveal">
+          <div class="stat-value">60%</div>
+          <div class="stat-label">Aumento na taxa de reciclagem</div>
+        </div>
+        <div class="stat-item reveal">
+          <div class="stat-value">99.5%</div>
+          <div class="stat-label">Uptime da plataforma (SLA)</div>
+        </div>
+        <div class="stat-item reveal">
+          <div class="stat-value">18 mo</div>
+          <div class="stat-label">Prazo de implementação total</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ════════════════════════════════════════════════════
+       SEÇÃO 2 — OBJETIVOS ESPECÍFICOS
+  ════════════════════════════════════════════════════ -->
+  <section id="objetivos" aria-labelledby="sec2-title">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <div class="num" style="background:rgba(59,130,246,0.15);color:#60a5fa;">02</div>
+        <span class="label" style="color:#60a5fa;">Objetivos Específicos</span>
+      </div>
+      <h2 class="section-title reveal" id="sec2-title">
+        Metas SMART alinhadas aos<br />pilares ESG e à PNRS
+      </h2>
+      <p class="section-desc reveal">
+        Cada objetivo foi desenhado para ser Específico, Mensurável, Atingível, Relevante e Temporal —
+        conectando eficiência operacional a impacto real na vida das pessoas e no meio ambiente.
+      </p>
+
+      <div class="objectives-grid">
+        <div class="obj-card green reveal">
+          <span class="tag">Ambiental · E</span>
+          <h3>Redução de Resíduos em Aterros</h3>
+          <p>Desviar ao menos <strong>45% dos resíduos sólidos</strong> dos aterros sanitários até o
+          24º mês, por meio de coleta seletiva otimizada e parcerias com cooperativas de reciclagem.</p>
+          <div class="smart-tag">
+            <span>S: Desvio de resíduos</span><span>M: % em aterro</span>
+            <span>A: Via cooperativas</span><span>T: 24 meses</span>
+          </div>
+        </div>
+        <div class="obj-card teal reveal">
+          <span class="tag">Ambiental · E</span>
+          <h3>Eficiência da Frota Coletora</h3>
+          <p>Reduzir em <strong>30% o consumo de combustível</strong> da frota municipal de coleta ao
+          final do 12º mês, por meio de roteirização dinâmica orientada a dados de ocupação dos contêineres.</p>
+          <div class="smart-tag">
+            <span>S: Frota municipal</span><span>M: Litros/km</span>
+            <span>A: Via IoT + IA</span><span>T: 12 meses</span>
+          </div>
+        </div>
+        <div class="obj-card blue reveal">
+          <span class="tag">Social · S</span>
+          <h3>Inclusão de Catadores</h3>
+          <p>Capacitar e formalizar <strong>300 catadores</strong> de materiais recicláveis em cooperativas
+          digitalmente integradas à plataforma, com rastreabilidade de produção e acesso a benefícios sociais
+          até o 18º mês.</p>
+          <div class="smart-tag">
+            <span>S: Catadores formalizados</span><span>M: Número de pessoas</span>
+            <span>A: Via cooperativas</span><span>T: 18 meses</span>
+          </div>
+        </div>
+        <div class="obj-card violet reveal">
+          <span class="tag">Social · S</span>
+          <h3>Engajamento Cidadão</h3>
+          <p>Alcançar <strong>50.000 usuários ativos</strong> no aplicativo UrbanSense Cidadão até o
+          15º mês, com taxa de retenção mensal acima de 40% e média de 2 registros de descarte por
+          usuário/mês.</p>
+          <div class="smart-tag">
+            <span>S: App cidadão</span><span>M: MAU</span>
+            <span>A: Gamificação</span><span>T: 15 meses</span>
+          </div>
+        </div>
+        <div class="obj-card amber reveal">
+          <span class="tag">Governança · G</span>
+          <h3>Compliance e Transparência</h3>
+          <p>Publicar relatórios de impacto ESG em conformidade com <strong>GRI Standards e PNRS</strong>
+          trimestralmente a partir do 6º mês, com dados auditáveis e acessíveis ao público via portal de
+          transparência.</p>
+          <div class="smart-tag">
+            <span>S: Relatórios GRI</span><span>M: Trimestral</span>
+            <span>A: Via plataforma</span><span>T: A partir M6</span>
+          </div>
+        </div>
+        <div class="obj-card rose reveal">
+          <span class="tag">Governança · G</span>
+          <h3>Segurança e Proteção de Dados</h3>
+          <p>Atingir <strong>zero incidentes críticos de segurança</strong> de dados e manter 100% de
+          conformidade com a LGPD desde o lançamento, com auditorias semestrais independentes e plano
+          de resposta a incidentes testado.</p>
+          <div class="smart-tag">
+            <span>S: Dados e privacidade</span><span>M: Incidentes críticos</span>
+            <span>A: Via DevSecOps</span><span>T: Contínuo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ════════════════════════════════════════════════════
+       SEÇÃO 3 — COMPONENTES TECNOLÓGICOS
+  ════════════════════════════════════════════════════ -->
+  <section id="tecnologias" aria-labelledby="sec3-title">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <div class="num" style="background:rgba(20,184,166,0.15);color:#2dd4bf;">03</div>
+        <span class="label" style="color:#2dd4bf;">Arquitetura &amp; Tecnologias</span>
+      </div>
+      <h2 class="section-title reveal" id="sec3-title">
+        Ecossistema tecnológico de ponta a ponta —<br />do sensor ao insight
+      </h2>
+      <p class="section-desc reveal">
+        A arquitetura foi projetada em camadas desacopladas, garantindo escalabilidade horizontal,
+        tolerância a falhas e facilidade de manutenção. Cada camada pode ser evoluída de forma independente.
+      </p>
+
+      <div class="tech-intro reveal">
+        <div>
+          <h3 style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:16px;">
+            Arquitetura em Camadas
+          </h3>
+          <p style="color:var(--text-secondary);font-size:0.92rem;line-height:1.7;margin-bottom:28px;">
+            Do nível do campo até a tomada de decisão, cada componente se comunica via protocolos
+            padronizados, permitindo substituição e evolução sem impacto nas camadas adjacentes.
+          </p>
+          <div class="arch-diagram">
+            <div class="arch-layer">
+              <span class="arch-layer-icon">📡</span>
+              <div class="arch-layer-info">
+                <div class="arch-layer-title">Camada de Percepção (Edge)</div>
+                <div class="arch-layer-desc">Sensores IoT nos contêineres e veículos coletores</div>
+              </div>
+            </div>
+            <div class="arch-arrow">NB-IoT · LoRaWAN · 5G</div>
+            <div class="arch-layer">
+              <span class="arch-layer-icon">🔀</span>
+              <div class="arch-layer-info">
+                <div class="arch-layer-title">Camada de Conectividade</div>
+                <div class="arch-layer-desc">Gateways de rede e broker MQTT/AMQP</div>
+              </div>
+            </div>
+            <div class="arch-arrow">TLS 1.3 · mTLS</div>
+            <div class="arch-layer">
+              <span class="arch-layer-icon">⚙️</span>
+              <div class="arch-layer-info">
+                <div class="arch-layer-title">Camada de Processamento (Edge + Cloud)</div>
+                <div class="arch-layer-desc">Edge computing local + nuvem híbrida para análise</div>
+              </div>
+            </div>
+            <div class="arch-arrow">REST · GraphQL · gRPC</div>
+            <div class="arch-layer">
+              <span class="arch-layer-icon">🧠</span>
+              <div class="arch-layer-info">
+                <div class="arch-layer-title">Camada de Inteligência</div>
+                <div class="arch-layer-desc">ML para roteirização, anomalia e previsão de demanda</div>
+              </div>
+            </div>
+            <div class="arch-arrow">WebSocket · SSE</div>
+            <div class="arch-layer">
+              <span class="arch-layer-icon">📊</span>
+              <div class="arch-layer-info">
+                <div class="arch-layer-title">Camada de Aplicação</div>
+                <div class="arch-layer-desc">Dashboard ESG, app cidadão, portal de transparência</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <!-- Decorative visual stats -->
+          <div style="display:grid;gap:16px;">
+            <div style="background:var(--bg-card);border:1px solid rgba(20,184,166,0.2);border-radius:20px;padding:28px;">
+              <div style="font-size:2rem;margin-bottom:12px;">🛰️</div>
+              <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;margin-bottom:8px;">Rede de Comunicação Principal</div>
+              <p style="color:var(--text-secondary);font-size:0.85rem;line-height:1.6;margin-bottom:16px;">
+                <strong>NB-IoT</strong> (Narrowband IoT) como protocolo primário — baixo consumo energético,
+                longa cobertura e custo de módulo reduzido, ideal para contêineres fixos em área urbana.
+                <strong>LoRaWAN</strong> como redundância em áreas de cobertura celular limitada.
+                Veículos coletores utilizam <strong>4G/5G</strong> para telemetria de frota em tempo real.
+              </p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <span style="padding:4px 10px;border-radius:7px;font-size:0.72rem;font-weight:600;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.3);color:#2dd4bf;">NB-IoT (primário)</span>
+                <span style="padding:4px 10px;border-radius:7px;font-size:0.72rem;font-weight:600;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;">LoRaWAN (redundância)</span>
+                <span style="padding:4px 10px;border-radius:7px;font-size:0.72rem;font-weight:600;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);color:#a78bfa;">4G/5G (veículos)</span>
+              </div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:28px;">
+              <div style="font-size:2rem;margin-bottom:12px;">🔋</div>
+              <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;margin-bottom:8px;">Autonomia dos Sensores</div>
+              <p style="color:var(--text-secondary);font-size:0.85rem;line-height:1.6;">
+                Módulos com bateria de íon de lítio + painel solar integrado ao contêiner.
+                Autonomia estimada de <strong>5+ anos</strong> sem manutenção de bateria em condições normais.
+                Alertas automáticos de nível crítico de carga enviados ao painel de operações.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech Detail Cards -->
+      <div class="tech-details">
+        <!-- Sensores IoT -->
+        <div class="tech-card reveal">
+          <div class="tc-header">
+            <div class="tc-icon green">📡</div>
+            <div>
+              <h3>Sensores IoT</h3>
+              <span class="tc-sub">Dispositivos de campo — percepção em tempo real</span>
+            </div>
+          </div>
+          <div class="tech-tag-list">
+            <span class="tech-tag">Ultrassônico (nível)</span>
+            <span class="tech-tag">Célula de carga (peso)</span>
+            <span class="tech-tag">Temperatura</span>
+            <span class="tech-tag">GPS/GNSS</span>
+            <span class="tech-tag">Câmera de baixa potência</span>
+          </div>
+          <p>Cada contêiner recebe um nó sensor com medição de volume por <strong>ultrassom</strong>,
+          peso da carga, temperatura interna (detecção de combustão espontânea) e geolocalização precisa.
+          Câmeras com visão computacional embarcada identificam o tipo de resíduo depositado — colaborando
+          com a triagem na origem.</p>
+        </div>
+
+        <!-- Plataforma de Gestão -->
+        <div class="tech-card reveal">
+          <div class="tc-header">
+            <div class="tc-icon teal">⚙️</div>
+            <div>
+              <h3>Plataforma de Gestão UrbanSense</h3>
+              <span class="tc-sub">Processamento e decisão em tempo real</span>
+            </div>
+          </div>
+          <div class="tech-tag-list">
+            <span class="tech-tag">Apache Kafka</span>
+            <span class="tech-tag">TimescaleDB</span>
+            <span class="tech-tag">Grafana</span>
+            <span class="tech-tag">Kubernetes</span>
+            <span class="tech-tag">Spring Boot</span>
+          </div>
+          <p>Broker de mensagens com <strong>Apache Kafka</strong> garante ingestão de milhões de eventos
+          por dia sem perda. Dados de séries temporais são armazenados em <strong>TimescaleDB</strong>
+          com compressão automática. O motor de regras processa alertas (contêiner crítico) e aciona o
+          módulo de roteirização dinâmica em milissegundos.</p>
+        </div>
+
+        <!-- Resiliência e Recuperação -->
+        <div class="tech-card reveal">
+          <div class="tc-header">
+            <div class="tc-icon blue">🔄</div>
+            <div>
+              <h3>Resiliência e Recuperação</h3>
+              <span class="tc-sub">Alta disponibilidade por design</span>
+            </div>
+          </div>
+          <div class="tech-tag-list">
+            <span class="tech-tag">Multi-AZ</span>
+            <span class="tech-tag">Backup incremental</span>
+            <span class="tech-tag">Circuit Breaker</span>
+            <span class="tech-tag">Edge offline-first</span>
+          </div>
+          <p>Implantação <strong>multi-zona de disponibilidade</strong> em nuvem híbrida com failover
+          automático em menos de 30 segundos. Nós de borda operam em modo <em>offline-first</em>:
+          armazenam dados localmente durante queda de conectividade e sincronizam ao reconectar.
+          Backups incrementais a cada 15 minutos com RPO &lt; 15 min e RTO &lt; 5 min.</p>
+        </div>
+
+        <!-- Escalabilidade -->
+        <div class="tech-card reveal">
+          <div class="tc-header">
+            <div class="tc-icon violet">📈</div>
+            <div>
+              <h3>Escalabilidade</h3>
+              <span class="tc-sub">Do bairro piloto à metrópole</span>
+            </div>
+          </div>
+          <div class="tech-tag-list">
+            <span class="tech-tag">Microserviços</span>
+            <span class="tech-tag">Auto-scaling</span>
+            <span class="tech-tag">Sharding geográfico</span>
+            <span class="tech-tag">Open APIs</span>
+          </div>
+          <p>Arquitetura de <strong>microserviços</strong> com auto-scaling horizontal via Kubernetes HPA.
+          Sharding geográfico de dados permite expansão a novos municípios sem impacto no desempenho.
+          Protocolo aberto FIWARE NGSI-LD garante interoperabilidade com outras plataformas de Smart City,
+          evitando lock-in de fornecedor.</p>
+        </div>
+
+        <!-- Tolerância a Falhas -->
+        <div class="tech-card reveal">
+          <div class="tc-header">
+            <div class="tc-icon amber">🛡️</div>
+            <div>
+              <h3>Tolerância a Falhas</h3>
+              <span class="tc-sub">Operação garantida mesmo sob falhas parciais</span>
+            </div>
+          </div>
+          <div class="tech-tag-list">
+            <span class="tech-tag">Replicação 3x</span>
+            <span class="tech-tag">Bulkhead Pattern</span>
+            <span class="tech-tag">Health Checks</span>
+            <span class="tech-tag">Chaos Engineering</span>
+          </div>
+          <p>Dados replicados em 3 nós independentes com consenso <strong>Raft</strong>. Padrão
+          <em>Bulkhead</em> isola falhas de componentes — a queda de um serviço de notificação não afeta
+          o motor de roteirização. Chaos Engineering (testes de falha controlados) executa semanalmente
+          em ambiente de staging para validação contínua de resiliência.</p>
+        </div>
+
+        <!-- Impacto de Falhas -->
+        <div class="tech-card reveal">
+          <div class="tc-header">
+            <div class="tc-icon rose">⚠️</div>
+            <div>
+              <h3>Gestão de Impacto de Falhas</h3>
+              <span class="tc-sub">Identificação e mitigação de pontos críticos</span>
+            </div>
+          </div>
+          <div class="tech-tag-list">
+            <span class="tech-tag">Mapa de criticidade</span>
+            <span class="tech-tag">Alertas em cascata</span>
+            <span class="tech-tag">Runbooks automatizados</span>
+            <span class="tech-tag">SRE on-call</span>
+          </div>
+          <p>Mapeamento de <strong>SPOF (Single Point of Failure)</strong> realizado na fase de design com
+          análise FMEA. Pontos críticos (broker de mensagens, banco de dados de roteirização) possuem
+          réplicas quentes em standby. Alertas automatizados via PagerDuty com <em>runbooks</em>
+          pré-definidos reduzem o MTTR (Mean Time to Repair) para menos de 10 minutos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ════════════════════════════════════════════════════
+       SEÇÃO 4 — IMPLEMENTAÇÃO
+  ════════════════════════════════════════════════════ -->
+  <section id="implementacao" aria-labelledby="sec4-title">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <div class="num" style="background:rgba(245,158,11,0.15);color:#fcd34d;">04</div>
+        <span class="label" style="color:#fcd34d;">Etapas de Implementação</span>
+      </div>
+      <h2 class="section-title reveal" id="sec4-title">
+        Da concepção ao escalonamento<br />em 18 meses
+      </h2>
+      <p class="section-desc reveal">
+        A implantação segue metodologia ágil com entregas incrementais, garantindo aprendizado
+        contínuo, ajuste de rota e mitigação de riscos a cada fase.
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot">01</div>
+          <div class="timeline-content reveal">
+            <div class="timeline-phase">Fase 1 · Meses 1–3</div>
+            <h3>📐 Diagnóstico, Design e Conformidade</h3>
+            <p>Levantamento de requisitos com prefeitura, concessionárias e cooperativas de catadores.
+            Definição da arquitetura técnica, modelo de dados e requisitos de segurança. Contratação de
+            fornecedores de sensores certificados pela Anatel. Elaboração do Plano de Adequação à LGPD
+            com DPO designado. Mapeamento de todos os fluxos de dados pessoais e de operação.
+            Estabelecimento de KPIs de baseline para comparação futura de impacto ESG.</p>
+            <span class="timeline-duration">⏱ 3 meses · Equipe: Arquitetos + Jurídico + Stakeholders</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">02</div>
+          <div class="timeline-content reveal">
+            <div class="timeline-phase">Fase 2 · Meses 4–7</div>
+            <h3>🔬 Piloto Controlado — 1 Distrito</h3>
+            <p>Instalação de 200 sensores em contêineres de um distrito piloto. Implantação do ambiente
+            cloud com infra mínima viável. Integração com o sistema de despacho da frota municipal.
+            Testes de carga e penetração (pentest). Coleta de feedback de garis, motoristas e população.
+            Ajuste de algoritmos de roteirização com base em dados reais. Publicação do primeiro
+            relatório de impacto ESG parcial.</p>
+            <span class="timeline-duration">⏱ 4 meses · Equipe: Dev + QA + Operações + SRE</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">03</div>
+          <div class="timeline-content reveal">
+            <div class="timeline-phase">Fase 3 · Meses 8–12</div>
+            <h3>🚀 Expansão Municipal e Lançamento do App Cidadão</h3>
+            <p>Rollout para todos os distritos municipais com instalação de 2.000+ sensores.
+            Lançamento do aplicativo UrbanSense Cidadão (iOS e Android) com funcionalidades de
+            gamificação e reporte de irregularidades. Integração com sistemas de cooperativas de
+            reciclagem para rastreabilidade de materiais. Treinamento da equipe de operações
+            no NOC (Network Operations Center). Ativação do portal de transparência ESG com dados abertos.</p>
+            <span class="timeline-duration">⏱ 5 meses · Equipe: Dev Full-Stack + Mobile + Capacitação</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">04</div>
+          <div class="timeline-content reveal">
+            <div class="timeline-phase">Fase 4 · Meses 13–16</div>
+            <h3>🧠 Inteligência Avançada e Integração Metropolitana</h3>
+            <p>Implantação de modelos de Machine Learning para previsão de enchimento de contêineres
+            (até 48h de antecedência). Integração com outros sistemas municipais (saneamento, mobilidade
+            urbana, secretaria de meio ambiente). Expansão do programa de capacitação digital para
+            catadores formalizados. Primeira auditoria externa de segurança e conformidade LGPD.
+            Avaliação de expansão para municípios vizinhos via modelo SaaS.</p>
+            <span class="timeline-duration">⏱ 4 meses · Equipe: DataScience + Integrações + Parceiros</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">05</div>
+          <div class="timeline-content reveal">
+            <div class="timeline-phase">Fase 5 · Meses 17–18</div>
+            <h3>📋 Consolidação, Avaliação e Próximos Ciclos</h3>
+            <p>Avaliação completa dos KPIs ESG em relação ao baseline. Publicação de relatório de impacto
+            anual nos padrões GRI e ODS. Ajuste do plano estratégico para o ciclo seguinte (anos 2–5).
+            Análise de ROI e sustentabilidade financeira do modelo. Apresentação de resultados ao conselho
+            municipal, parceiros e comunidade. Planejamento de replicabilidade para outros municípios.</p>
+            <span class="timeline-duration">⏱ 2 meses · Equipe: Gestão + Comunicação + Stakeholders</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ════════════════════════════════════════════════════
+       SEÇÃO 5 — BENEFÍCIOS
+  ════════════════════════════════════════════════════ -->
+  <section id="beneficios" aria-labelledby="sec5-title">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <div class="num" style="background:rgba(34,197,94,0.15);color:#4ade80;">05</div>
+        <span class="label" style="color:#4ade80;">Benefícios Esperados</span>
+      </div>
+      <h2 class="section-title reveal" id="sec5-title">
+        Impacto mensurável para o município,<br />o meio ambiente e as pessoas
+      </h2>
+      <p class="section-desc reveal">
+        Os benefícios do UrbanSense ESG se distribuem transversalmente pelos três pilares da
+        sustentabilidade — gerando valor econômico, ambiental e social de forma integrada e rastreável.
+      </p>
+
+      <div class="benefits-grid">
+        <div class="benefit-card bc-green reveal">
+          <span class="benefit-icon">🌱</span>
+          <div class="benefit-number">-28%</div>
+          <h3>Emissões de CO₂</h3>
+          <p>Rotas otimizadas reduzem km percorridos pela frota, diminuindo diretamente as emissões de gases de efeito estufa.</p>
+        </div>
+        <div class="benefit-card bc-teal reveal">
+          <span class="benefit-icon">♻️</span>
+          <div class="benefit-number">+60%</div>
+          <h3>Taxa de Reciclagem</h3>
+          <p>Integração de coleta seletiva otimizada com cooperativas digitais amplia o volume de materiais reciclados.</p>
+        </div>
+        <div class="benefit-card bc-blue reveal">
+          <span class="benefit-icon">💸</span>
+          <div class="benefit-number">-35%</div>
+          <h3>Custo Operacional</h3>
+          <p>Eliminação de coletas desnecessárias e combustível desperdiçado gera economia significativa aos cofres públicos.</p>
+        </div>
+        <div class="benefit-card bc-violet reveal">
+          <span class="benefit-icon">👥</span>
+          <div class="benefit-number">300+</div>
+          <h3>Catadores Capacitados</h3>
+          <p>Formalização digital de cooperativas de reciclagem com rastreabilidade de produção e acesso a benefícios.</p>
+        </div>
+        <div class="benefit-card bc-amber reveal">
+          <span class="benefit-icon">📱</span>
+          <div class="benefit-number">50k</div>
+          <h3>Cidadãos Engajados</h3>
+          <p>Aplicativo com gamificação e recompensas cria cultura de participação ativa na gestão ambiental urbana.</p>
+        </div>
+        <div class="benefit-card bc-green reveal">
+          <span class="benefit-icon">🏆</span>
+          <div class="benefit-number">GRI</div>
+          <h3>Relatórios Certificados</h3>
+          <p>Transparência pública com relatórios nos padrões GRI Standards e alinhados às metas ODS da ONU.</p>
+        </div>
+      </div>
+
+      <!-- ESG Pillar Banner -->
+      <div class="benefits-esg-banner">
+        <div class="esg-pillar e reveal">
+          <div class="pillar-letter">E</div>
+          <h3>🌿 Ambiental</h3>
+          <ul>
+            <li>Redução de resíduos em aterros sanitários</li>
+            <li>Menor emissão de CO₂ pela frota</li>
+            <li>Monitoramento de focos de descarte irregular</li>
+            <li>Dados para compensação de crédito de carbono</li>
+          </ul>
+        </div>
+        <div class="esg-pillar s reveal">
+          <div class="pillar-letter">S</div>
+          <h3>🤝 Social</h3>
+          <ul>
+            <li>Formalização e renda para catadores</li>
+            <li>Engajamento e educação ambiental cidadã</li>
+            <li>Transparência para comunidades vulneráveis</li>
+            <li>Inclusão digital por meio do app cidadão</li>
+          </ul>
+        </div>
+        <div class="esg-pillar g reveal">
+          <div class="pillar-letter">G</div>
+          <h3>⚖️ Governança</h3>
+          <ul>
+            <li>Compliance com LGPD e PNRS garantido</li>
+            <li>Auditoria contínua e relatórios públicos</li>
+            <li>Dados abertos para controle social</li>
+            <li>Gestão ética de dados e privacidade</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ════════════════════════════════════════════════════
+       SEÇÃO 6 — SEGURANÇA E PRIVACIDADE
+  ════════════════════════════════════════════════════ -->
+  <section id="seguranca" aria-labelledby="sec6-title">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <div class="num" style="background:rgba(139,92,246,0.15);color:#a78bfa;">06</div>
+        <span class="label" style="color:#a78bfa;">Segurança &amp; Privacidade</span>
+      </div>
+      <h2 class="section-title reveal" id="sec6-title">
+        Proteção de dados e segurança<br />como pilares de confiança
+      </h2>
+      <p class="section-desc reveal">
+        A segurança não é uma camada adicionada ao final — é integrada ao design de cada componente
+        desde o primeiro dia, seguindo a filosofia <em>Security by Design</em> e <em>Privacy by Default</em>.
+      </p>
+
+      <div class="security-grid">
+        <div class="sec-card reveal">
+          <div class="sc-icon">🔐</div>
+          <h3>Criptografia de Ponta a Ponta</h3>
+          <p>Todos os dados em trânsito são protegidos por <strong>TLS 1.3</strong>. Comunicação entre
+          dispositivos IoT e o broker utiliza <strong>mTLS</strong> (autenticação mútua com certificados
+          x.509 únicos por dispositivo). Dados em repouso são cifrados com <strong>AES-256</strong>.
+          Chaves gerenciadas por KMS (Key Management Service) com rotação automática trimestral.</p>
+        </div>
+        <div class="sec-card reveal">
+          <div class="sc-icon">🪪</div>
+          <h3>Autenticação e Controle de Acesso</h3>
+          <p>Autenticação multifator (MFA) obrigatória para todos os usuários administrativos.
+          Controle de acesso baseado em papéis (<strong>RBAC</strong>) com princípio do menor privilégio.
+          Dispositivos IoT autenticados por certificados de hardware (Secure Element). Tokens JWT com
+          tempo de expiração curto e rotação via OAuth 2.0 + PKCE.</p>
+        </div>
+        <div class="sec-card reveal">
+          <div class="sc-icon">🧾</div>
+          <h3>Conformidade com LGPD</h3>
+          <p>Encarregado de Proteção de Dados (DPO) designado e declarado à ANPD. Relatório de Impacto
+          à Proteção de Dados Pessoais (RIPD) elaborado antes do lançamento. Dados dos cidadãos
+          anonimizados por padrão — somente agregados são expostos. Mecanismo de <em>Right to
+          Erasure</em> implementado no aplicativo cidadão. Consentimento granular e revogável.</p>
+        </div>
+        <div class="sec-card reveal">
+          <div class="sc-icon">👁️</div>
+          <h3>Monitoramento e Detecção de Ameaças</h3>
+          <p>SIEM (Security Information and Event Management) centralizado com correlação de eventos
+          em tempo real. Detecção de anomalias com Machine Learning — identifica comportamentos
+          suspeitos de dispositivos ou usuários. IDS/IPS na camada de rede do datacenter.
+          Alertas automáticos e plano de resposta a incidentes com RTO de 1 hora para incidentes críticos.</p>
+        </div>
+        <div class="sec-card reveal">
+          <div class="sc-icon">🔍</div>
+          <h3>Auditoria e Rastreabilidade</h3>
+          <p>Log imutável de todas as operações administrativas e acessos a dados sensíveis, armazenado
+          em repositório separado com controle de integridade criptográfico. Trilha de auditoria completa
+          exportável para fins regulatórios. Auditoria externa semestral por empresa certificada ABNT
+          NBR ISO/IEC 27001. Testes de penetração (pentest) anuais por red team independente.</p>
+        </div>
+        <div class="sec-card reveal">
+          <div class="sc-icon">🔒</div>
+          <h3>Segurança na Cadeia de Suprimentos IoT</h3>
+          <p>Todos os dispositivos IoT são adquiridos de fornecedores com certificação de segurança
+          (IEC 62443). Firmware assinado digitalmente — dispositivos rejeitam atualizações não
+          autorizadas. Inventário de ativos IoT gerenciado centralmente com detecção de dispositivos
+          não autorizados (rogue devices). Processo de <em>secure boot</em> em todos os nós de borda.</p>
+        </div>
+      </div>
+
+      <!-- Compliance Strip -->
+      <div class="compliance-strip reveal">
+        <span class="cs-label">Conformidade &amp; Certificações:</span>
+        <div class="cs-badges">
+          <span class="cs-badge">LGPD</span>
+          <span class="cs-badge">PNRS</span>
+          <span class="cs-badge">ISO 27001</span>
+          <span class="cs-badge">IEC 62443</span>
+          <span class="cs-badge">FIWARE NGSI-LD</span>
+          <span class="cs-badge">GRI Standards</span>
+          <span class="cs-badge">ODS/SDG</span>
+          <span class="cs-badge">OWASP IoT Top 10</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-logo">🌿 UrbanSense ESG</div>
+    <p>Proposta de Projeto IoT para Gestão Inteligente de Resíduos Urbanos</p>
+    <p style="margin-top:8px;">Pilar Ambiental · Pilar Social · Pilar de Governança</p>
+  </footer>
+
+  <script>
+    // ── Scroll reveal animation ─────────────────────────
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, (entry.target.dataset.delay || 0));
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.dataset.delay = (i % 4) * 80;
+      revealObserver.observe(el);
+    });
+
+    // ── Animate stat values ─────────────────────────────
+    function animateValue(el, start, end, duration, suffix) {
+      let startTime = null;
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(start + (end - start) * eased) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const statItems = entry.target.querySelectorAll('.stat-item');
+          statItems.forEach(item => {
+            const valEl = item.querySelector('.stat-value');
+            if (valEl && !valEl.dataset.animated) {
+              valEl.dataset.animated = '1';
+              const text = valEl.textContent.trim();
+              const num = parseFloat(text.replace(/[^0-9.]/g, ''));
+              const suffix = text.replace(/[0-9.]/g, '');
+              if (!isNaN(num)) animateValue(valEl, 0, num, 1200, suffix);
+            }
+          });
+          statObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.stat-bar').forEach(el => statObserver.observe(el));
+
+    // ── Navbar scroll effect ────────────────────────────
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.style.background = 'rgba(7,11,20,0.97)';
+      } else {
+        nav.style.background = 'rgba(7,11,20,0.85)';
+      }
+    });
+  </script>
+</body>
+</html>
